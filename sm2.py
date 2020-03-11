@@ -51,7 +51,7 @@ LOGO1= "https://www.tirumala.org/NewImages/HD-TXT.png"
 #'message':fields.String
 #})
 
-reading=0
+#reading=0
 
 server = flask.Flask(__name__)
 
@@ -73,7 +73,7 @@ class DeviceModel(db.Model):
     __tablename__ = 'devices'
 
     stamp = db.Column(db.String(25),primary_key=True)
-    reading = db.Column(db.String(15))
+    #reading = db.Column(db.String(15))
     devname = db.Column(db.String(15))
   
     tStamp= db.Column(db.String(25))
@@ -83,9 +83,9 @@ class DeviceModel(db.Model):
     
     
     
-    def __init__(self,stamp,reading,devname,tStamp,rphvol,yphvol,bphvol):
+    def __init__(self,stamp,devname,tStamp,rphvol,yphvol,bphvol):
         self.stamp = stamp
-        self.reading=reading
+        #self.reading=reading
 
         self.devname= devname
         self.tStamp= tStamp
@@ -97,7 +97,7 @@ class DeviceModel(db.Model):
 
 
     def json(self):
-        return {'stamp':self.stamp,'reading':self.reading,'devname':self.devname,'tStamp':self.tStamp,'rphvol': self.rphvol,'yphvol': self.yphvol,'bphvol': self.bphvol}
+        return {'stamp':self.stamp,'devname':self.devname,'tStamp':self.tStamp,'rphvol': self.rphvol,'yphvol': self.yphvol,'bphvol': self.bphvol}
 
     @classmethod
     def find_by_name(cls, stamp):
@@ -118,9 +118,9 @@ class Device(Resource):
     parser.add_argument('stamp',
         type=str
     )
-    parser.add_argument('reading',
+    """parser.add_argument('reading',
         type=str
-    )
+    )"""
     parser.add_argument('devname',
         type=str
     )
@@ -146,8 +146,8 @@ class Device(Resource):
         return {'message': 'Device not found'}, 404
 
     def post(self, stamp):
-        global reading
-        reading=reading+1
+        #global reading
+        #reading=reading+1
         #devId1 =devId1 +1
         #count =str(devId1)
         #print("Reading No.=",count)
@@ -155,13 +155,13 @@ class Device(Resource):
         print("data=",data)
         device = DeviceModel.find_by_name(stamp)
         stamp = data['tStamp']
-        data['reading']=str(reading)
+        #data['reading']=str(reading)
         if device is None:
-            device = DeviceModel(stamp,data['reading'],data['devname'],data['tStamp'],data['rphvol'],data['yphvol'],data['bphvol'])
+            device = DeviceModel(stamp,data['devname'],data['tStamp'],data['rphvol'],data['yphvol'],data['bphvol'])
             print("device=",device)
 
         else:
-            device.reading= data['reading']
+            #device.reading= data['reading']
             device.devname= data['devname']
             device.tStamp = data['tStamp']
             device.rphvol = data['rphvol']
@@ -307,10 +307,10 @@ def table(devices):
     #global reading
     #reading=reading+1
     table_header=[
-        html.Thead(html.Tr([html.Th('Reading No.'),html.Th('dev name') ,html.Th('tstamp'), html.Th('rphV') ,
+        html.Thead(html.Tr([html.Th('dev name') ,html.Th('tstamp'), html.Th('rphV') ,
             html.Th('yphV') , html.Th('bphV')]))]
     table_body=[
-        html.Tbody(html.Tr([html.Td(dev.reading),html.Td(dev.devname),html.Td(dev.tStamp), html.Td(dev.rphvol) ,
+        html.Tbody(html.Tr([html.Td(dev.devname),html.Td(dev.tStamp), html.Td(dev.rphvol) ,
             html.Td(dev.yphvol) , html.Td(dev.bphvol)]))for dev in devices]
     table=dbc.Table(table_header+table_body,bordered=True,striped=True,hover=True,style={"backgroundColor":"white"})
     return table
