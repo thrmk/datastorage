@@ -1,1 +1,1 @@
-web: gunicorn smtest:server
+web: gunicorn sm2:server
