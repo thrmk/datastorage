@@ -1,1 +1,1 @@
-web: gunicorn sm2:server
+web: gunicorn postmethod2:server
